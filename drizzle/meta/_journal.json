@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1712779277525,
+      "tag": "0000_aspiring_giant_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1712783763920,
+      "tag": "0001_typical_purifiers",
+      "breakpoints": true
+    }
+  ]
+}
