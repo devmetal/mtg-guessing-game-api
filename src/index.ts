@@ -6,6 +6,8 @@ import auth from "./auth/routes";
 
 export const app = new Hono();
 
+export type AppType = typeof app;
+
 app.use(secureHeaders());
 app.use(logger());
 
