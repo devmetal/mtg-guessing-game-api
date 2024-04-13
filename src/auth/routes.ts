@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { z } from "zod";
 import { validator } from "hono/validator";
 import { sign, jwt } from "hono/jwt";
+import { HTTPException } from "hono/http-exception";
 import {
   checkEmailAndPassword,
   createUser,
@@ -19,7 +20,7 @@ const authSchema = z.object({
 const authValidator = validator("json", (value, c) => {
   const parsed = authSchema.safeParse(value);
   if (!parsed.success) {
-    return c.text("Bad request", 401);
+    throw new HTTPException(400);
   }
   return parsed.data;
 });
@@ -28,7 +29,7 @@ auth.post("/register", authValidator, async (c) => {
   const { email, password } = c.req.valid("json");
 
   if (await isUserAlready(email)) {
-    return c.text("Bad request", 401);
+    throw new HTTPException(400);
   }
 
   const user = await createUser(email, password);
@@ -40,7 +41,7 @@ auth.post("/login", authValidator, async (c) => {
   const user = await checkEmailAndPassword(email, password);
 
   if (!user) {
-    return c.text("Bad request", 401);
+    throw new HTTPException(401);
   }
 
   const payload = {
@@ -56,7 +57,7 @@ auth.get("/me", jwt({ secret: Bun.env.SECRET }), async (c) => {
   const { sub } = c.get("jwtPayload") as { sub: number };
 
   if (!sub || !Number.isInteger(sub)) {
-    return c.text("Invalid token", 401);
+    throw new HTTPException(401);
   }
 
   const user = await getUserById(sub);
