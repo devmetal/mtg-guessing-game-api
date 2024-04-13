@@ -3,7 +3,9 @@
     "dev": "bun run --hot src/index.ts",
     "db:generate": "drizzle-kit generate:sqlite --schema ./src/schema.ts",
     "db:migrate": "bun run migrate.ts",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "test:ci": "bun test --env-file=.env.test --preload ./test.setup.ts",
+    "test:watch": "bun test --env-file=.env.test --preload ./test.setup.ts --watch"
   },
   "dependencies": {
     "drizzle-orm": "^0.30.7",
