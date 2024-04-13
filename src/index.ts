@@ -1,13 +1,16 @@
 import { Hono } from "hono";
 import { logger } from "hono/logger";
+import { secureHeaders } from "hono/secure-headers";
 import { HTTPException } from "hono/http-exception";
 import auth from "./auth/routes";
 
-const app = new Hono();
+export const app = new Hono();
 
+app.use(secureHeaders());
 app.use(logger());
 
 app.route("/api/auth", auth);
+
 app.onError((err, c) => {
   console.error(err.message);
   console.error(err.stack);
