@@ -10,7 +10,10 @@ export const app = new Hono();
 export type AppType = typeof app;
 
 app.use(secureHeaders());
-app.use(logger());
+
+if (Bun.env.NODE_ENV !== "test") {
+  app.use(logger());
+}
 
 app.route("/api/auth", auth);
 app.route("/api/game", game);
