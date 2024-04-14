@@ -9,7 +9,7 @@ export const users = sqliteTable("users", {
 export const games = sqliteTable("games", {
   id: integer("id").primaryKey(),
   started: integer("started", { mode: "timestamp_ms" }),
-  usersId: integer("user_id").references(() => users.id),
+  userId: integer("user_id").references(() => users.id),
 });
 
 export const puzzles = sqliteTable("puzzles", {
