@@ -1,9 +1,14 @@
-import getUser from "@/auth/getUser";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { jwt } from "hono/jwt";
 import { validator } from "hono/validator";
 import { z } from "zod";
+import getUser from "@/auth/getUser";
+import {
+  createGameForUser,
+  getGameByIdAndUser,
+  getGamesByUser,
+} from "./service";
 
 const game = new Hono();
 
@@ -25,22 +30,25 @@ const paramsValidator = validator("param", (value, c) => {
 
 game.use(jwt({ secret: Bun.env.SECRET }), getUser);
 
-game.get("/", async (c) => {
-  return c.text("ok");
+game.get("/", getUser, async (c) => {
+  const games = await getGamesByUser(c.get("user").id);
+  return c.json(games);
 });
 
-game.get("/:id", paramsValidator, async (c) => {
+game.get("/:id", getUser, paramsValidator, async (c) => {
   const { id } = c.req.valid("param");
-  return c.text("ok");
+  const game = await getGameByIdAndUser(id, c.get("user").id);
+
+  if (!game) {
+    throw new HTTPException(404);
+  }
+
+  return c.json(game);
 });
 
-game.post("/", async (c) => {
-  return c.text("ok");
-});
-
-game.patch("/:id", paramsValidator, async (c) => {
-  const { id } = c.req.valid("param");
-  return c.text("ok");
+game.post("/", getUser, async (c) => {
+  const game = await createGameForUser(c.get("user").id);
+  return c.json(game);
 });
 
 export default game;
