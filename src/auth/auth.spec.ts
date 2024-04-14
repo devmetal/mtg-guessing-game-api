@@ -19,7 +19,22 @@ describe("POST /api/auth/register", () => {
     expect(response.status).toBe(200);
   });
 
-  test("with invalid datas", async () => {});
+  const cases = [
+    ["e", "", "p", ""],
+    ["email", "", "p", ""],
+    ["email", null, "p", null],
+    ["email", "invalid", "password", "12345"],
+    ["email", "valid@valid.com", "password", "12"],
+  ] as const;
+
+  test.each(cases)("%p=%p, %p=%p respond 400", async (e, ev, p, pv) => {
+    const response = await register("POST", {
+      [e]: ev,
+      [p]: pv,
+    });
+
+    expect(response.status).toBe(400);
+  });
 });
 
 describe("POST /api/auth/login", () => {
