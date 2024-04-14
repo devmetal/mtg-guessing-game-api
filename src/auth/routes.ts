@@ -3,12 +3,8 @@ import { z } from "zod";
 import { validator } from "hono/validator";
 import { sign, jwt } from "hono/jwt";
 import { HTTPException } from "hono/http-exception";
-import {
-  checkEmailAndPassword,
-  createUser,
-  getUserById,
-  isUserAlready,
-} from "./service";
+import { checkEmailAndPassword, createUser, isUserAlready } from "./service";
+import getUser from "./getUser";
 
 const auth = new Hono();
 
@@ -53,14 +49,8 @@ auth.post("/login", authValidator, async (c) => {
   return c.json({ token });
 });
 
-auth.get("/me", jwt({ secret: Bun.env.SECRET }), async (c) => {
-  const { sub } = c.get("jwtPayload") as { sub: number };
-
-  if (!sub || !Number.isInteger(sub)) {
-    throw new HTTPException(401);
-  }
-
-  const user = await getUserById(sub);
+auth.get("/me", jwt({ secret: Bun.env.SECRET }), getUser, async (c) => {
+  const user = c.get("user");
   return c.json({ email: user.email, id: user.id });
 });
 

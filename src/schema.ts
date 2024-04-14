@@ -22,3 +22,5 @@ export const puzzles = sqliteTable("puzzles", {
   colorsActual: text("colors_actual", { mode: "json" }).$type<string[]>(),
   gameId: integer("game_id").references(() => games.id),
 });
+
+export type User = typeof users.$inferSelect;
