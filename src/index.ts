@@ -14,8 +14,10 @@ app.use(logger());
 app.route("/api/auth", auth);
 
 app.onError((err, c) => {
-  console.error(err.message);
-  console.error(err.stack);
+  if (Bun.env.NODE_ENV !== "test") {
+    console.error(err.message);
+    console.error(err.stack);
+  }
 
   if (err instanceof HTTPException) {
     return err.getResponse();
