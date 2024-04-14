@@ -3,15 +3,20 @@ import { logger } from "hono/logger";
 import { secureHeaders } from "hono/secure-headers";
 import { HTTPException } from "hono/http-exception";
 import auth from "./auth/routes";
+import game from "./game/routes";
 
 export const app = new Hono();
 
 export type AppType = typeof app;
 
 app.use(secureHeaders());
-app.use(logger());
+
+if (Bun.env.NODE_ENV !== "test") {
+  app.use(logger());
+}
 
 app.route("/api/auth", auth);
+app.route("/api/game", game);
 
 app.onError((err, c) => {
   if (Bun.env.NODE_ENV !== "test") {

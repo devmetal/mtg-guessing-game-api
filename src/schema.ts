@@ -8,8 +8,10 @@ export const users = sqliteTable("users", {
 
 export const games = sqliteTable("games", {
   id: integer("id").primaryKey(),
-  started: integer("started", { mode: "timestamp_ms" }),
-  userId: integer("user_id").references(() => users.id),
+  started: integer("started", { mode: "timestamp_ms" }).notNull(),
+  userId: integer("user_id")
+    .references(() => users.id)
+    .notNull(),
 });
 
 export const puzzles = sqliteTable("puzzles", {
@@ -17,8 +19,14 @@ export const puzzles = sqliteTable("puzzles", {
   cId: text("cid").notNull(),
   score: real("score"),
   cmcGuessed: integer("cmc_guessed"),
-  cmcActual: integer("cmc_actual"),
+  cmcActual: integer("cmc_actual").notNull(),
   colorsGuessed: text("colors_guessed", { mode: "json" }).$type<string[]>(),
-  colorsActual: text("colors_actual", { mode: "json" }).$type<string[]>(),
-  gameId: integer("game_id").references(() => games.id),
+  colorsActual: text("colors_actual", { mode: "json" })
+    .$type<string[]>()
+    .notNull(),
+  gameId: integer("game_id")
+    .references(() => games.id)
+    .notNull(),
 });
+
+export type User = typeof users.$inferSelect;
