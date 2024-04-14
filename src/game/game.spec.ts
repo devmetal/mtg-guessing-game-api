@@ -36,4 +36,9 @@ describe("GET /api/game/:id", () => {
     const response = await gameAuthReq(`/api/game/${id}`)("GET");
     expect(response.status).toBe(r);
   });
+
+  test("without token should respond 401", async () => {
+    const response = await game("/api/game/1")(null)("GET");
+    expect(response.status).toBe(401);
+  });
 });
