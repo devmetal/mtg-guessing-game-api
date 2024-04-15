@@ -1,15 +1,10 @@
 import { test, expect, beforeAll, describe } from "bun:test";
 import { app } from "@/index";
-import { createUser } from "./service";
 import { rest } from "@/test/helper";
 
 const register = rest(app)("/api/auth/register")(null);
 const login = rest(app)("/api/auth/login")(null);
 const me = rest(app)("/api/auth/me");
-
-beforeAll(async () => {
-  await createUser("test@test.com", "12345");
-});
 
 describe("POST /api/auth/register", () => {
   const cases = [
